@@ -1,7 +1,7 @@
 {
   "name": "fso_test",
   "version": "1.0.0",
-  "description": "",
+  "description": "part3 examples",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

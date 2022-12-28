@@ -3,6 +3,15 @@ const app = express()
 
 app.use(express.json())
 
+const requestLogger = (request, response, next) => {
+  console.log('Method: ', request.method)
+  console.log('Path: ', request.path)
+  console.log('Body: ', request.body)
+  console.log('---')
+  next()
+}
+
+app.use(requestLogger)
 
 let notes =  [
     {
@@ -25,7 +34,15 @@ let notes =  [
     }
   ]
 
+const generateId = () => {
+  const maxId = notes.length > 0
+    ? Math.max(...notes.map(n => n.id))
+    : 0
+  return maxId + 1
+}
 
+
+//routes start
 app.get('/', (req, res) => {
     res.send(
         '<h1>Hello world</h1>'
@@ -55,15 +72,6 @@ app.delete('/api/notes/:id', (req,res) => {
     res.status(204).end()
 })
 
-
-const generateId = () => {
-  const maxId = notes.length > 0
-    ? Math.max(...notes.map(n => n.id))
-    : 0
-  return maxId + 1
-}
-
-
 app.post('/api/notes', (req,res) => {
   
   const body = req.body
@@ -85,6 +93,13 @@ app.post('/api/notes', (req,res) => {
   
   res.json(note)
 })
+
+//routes end
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({error: "Unknown endpoint"})
+}
+app.use(unknownEndpoint)
 
 
 const PORT = 3001
