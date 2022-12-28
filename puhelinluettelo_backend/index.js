@@ -4,12 +4,33 @@
 //3.4 done
 //3.5 done
 //3.6 done
-
+//3.7 done
+//3.8 done
 
 const express = require('express')
+const morgan = require('morgan')
+
 const app = express()
 
 app.use(express.json())
+
+
+app.use(morgan(function (tokens, request, response) {
+    const message = [
+        tokens.method(request, response),
+        tokens.url(request, response),
+        tokens.status(request, response),
+        tokens.res(request, response, 'content-length'), '-',
+        tokens['response-time'](request, response), 'ms'
+    ].join(' ')
+
+    if (tokens.method(request, response)==='POST') {
+        return message + ` ${JSON.stringify(request.body)}`
+    }
+
+    return message
+})
+)
 
 
 let persons = [
@@ -76,6 +97,7 @@ app.delete("/api/persons/:id", (request, response) => {
 
     response.json(new_persons)
 })
+
 
 app.post("/api/persons", (request, response) => {
     const body = request.body
