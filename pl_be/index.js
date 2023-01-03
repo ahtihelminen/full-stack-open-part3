@@ -1,11 +1,3 @@
-//3.1 done
-//3.2 done
-//3.3 done
-//3.4 done
-//3.5 done
-//3.6 done 
-//3.7 done
-//3.8 done
 
 const express = require('express')
 const morgan = require('morgan')
@@ -94,9 +86,9 @@ app.get("/api/persons/:id", (request, response) => {
 app.delete("/api/persons/:id", (request, response) => {
     const id = Number(request.params.id)
 
-    const new_persons = persons.filter(person => person.id !== id)
-
-    response.json(new_persons)
+    persons = persons.filter(person => person.id !== id)
+    
+    response.json(persons)
 })
 
 
@@ -128,7 +120,7 @@ app.post("/api/persons", (request, response) => {
     }
 
     persons = persons.concat(person)
-    response.json(persons)
+    return response.status(200).json(person)
 })
 
 const PORT = process.env.PORT || 3001

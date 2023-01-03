@@ -1,4 +1,4 @@
-# fly.toml file generated for phonebook789 on 2022-12-30T10:56:35+02:00
+# fly.toml file generated for phonebook789 on 2023-01-03T16:56:30+02:00
 
 app = "phonebook789"
 kill_signal = "SIGINT"
