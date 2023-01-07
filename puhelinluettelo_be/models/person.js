@@ -13,8 +13,28 @@ mongoose.connect(url)
     })
 
 const personSchema = new mongoose.Schema({
-    name: String,
-    number: String,
+    name: {
+        type: String,
+        minlength: 3,
+        required: true
+    },
+    number: {
+        type: String,
+        minlength: 8,
+        validate: {
+            validator: function(number) {
+                const parts = number.split('-')
+                const a = parts[0]
+                if (a.length === 2 || a.length === 3) {
+                    return true
+                } else {
+                    return false
+                }
+            },
+            message: props => 'number has to be either format 00-000000 or 000-00000'
+        },
+        required: [true, 'number required']
+    },
 })
 
 personSchema.set('toJSON', {

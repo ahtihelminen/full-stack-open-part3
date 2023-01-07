@@ -24,33 +24,6 @@ app.use(requestLogger)
 
 
 
-let notes =  [
-    {
-      id: 1,
-      content: "HTML is easy",
-      date: "2022-01-10T17:30:31.098Z",
-      important: true
-    },
-    {
-      id: 2,
-      content: "Browser can execute only Javascript",
-      date: "2022-01-10T18:39:34.091Z",
-      important: false
-    },
-    {
-      id: 3,
-      content: "GET and POST are the most important methods of HTTP protocol",
-      date: "2022-01-10T19:20:14.298Z",
-      important: true
-    }
-  ]
-
-const generateId = () => {
-  const maxId = notes.length > 0
-    ? Math.max(...notes.map(n => n.id))
-    : 0
-  return maxId + 1
-}
 
 
 //routes start
@@ -86,14 +59,13 @@ app.delete('/api/notes/:id', (req,res) => {
 
 app.put('/api/notes/:id', (req,res) => {
 
-  const body = req.body
+  const {content, important} = req.body
 
-  const note = {
-    content: body.content,
-    important: body.important
-  }
-
-  Note.findByIdAndUpdate(req.params.id, note, {new: true})
+  Note.findByIdAndUpdate(
+    req.params.id,
+    {content, important},
+    {new: true, runValidators: true, constext: 'query'}
+  )
     .then(updatedNote => {
       res.json(updatedNote)
     })
@@ -102,7 +74,7 @@ app.put('/api/notes/:id', (req,res) => {
     })
 })
 
-app.post('/api/notes', (req,res) => {
+app.post('/api/notes', (req,res, next) => {
   
   const body = req.body
 
@@ -118,9 +90,11 @@ app.post('/api/notes', (req,res) => {
     date: new Date(),
   })
 
-  note.save().then(savedNote => {
-    res.json(savedNote)
-  })
+  note.save()
+    .then(savedNote => {
+      res.json(savedNote)
+    })
+    .catch(error => next(error))
 })
 
 //routes end
@@ -136,6 +110,8 @@ const errorHandler = (error, request, response, next) =>{
 
   if (error.message === 'CastError') {
     response.status(400).send({error: 'malformatted id'})
+  } else if (error.message === 'ValidationError') {
+    response.status(400).send({error: error.message})
   }
 
   next(error)

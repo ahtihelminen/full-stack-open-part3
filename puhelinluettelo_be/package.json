@@ -7,7 +7,7 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:ui": "rm -rf build && cd ../../part2/pl_fe && npm run build && cp -r build ../../part3/pl_be",
+    "build:ui": "rm -rf build && cd ../../part2/puhelinluettelo_fe && npm run build && cp -r build ../../part3/puhelinluettelo_be",
     "deploy": "flyctl deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
     "logs:prod": "flyctl logs"
